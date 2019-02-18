@@ -1,16 +1,17 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {NavController} from '@ionic/angular';
+import {NotasService, Note} from '../../services/notas.service';
 
 @Component({
     selector: 'app-cadastro',
     templateUrl: './cadastro.page.html',
     styleUrls: ['./cadastro.page.scss'],
 })
-export class CadastroPage implements OnInit {
+export class CadastroPage {
 
-    model = {title: '', description: ''};
+    model = new Note();
 
-    constructor(public navCtrl: NavController) {
+    constructor(public navCtrl: NavController, private notasService: NotasService) {
     }
 
     goBack() {
@@ -18,6 +19,7 @@ export class CadastroPage implements OnInit {
     }
 
     save() {
+        this.notasService.insert(this.model);
         this.navCtrl.pop();
     }
 
