@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 import {NavController} from '@ionic/angular';
-import {NotasService, Note} from '../../services/notas.service';
+import {NotasService, Nota} from '../../services/notas.service';
 
 @Component({
     selector: 'app-cadastro',
@@ -9,13 +9,13 @@ import {NotasService, Note} from '../../services/notas.service';
 })
 export class CadastroPage {
 
-    model = new Note();
+    model = new Nota();
 
     constructor(public navCtrl: NavController, private notasService: NotasService) {
     }
 
     goBack() {
-        this.navCtrl.pop();
+        this.navCtrl.back();
     }
 
     save() {
