@@ -1,6 +1,7 @@
 import {Component} from '@angular/core';
 import {NavController} from '@ionic/angular';
-import {Lista, NotasService} from '../../services/notas.service';
+import {DbService, Lista} from '../../services/db.service';
+import {LoadingController} from '@ionic/angular';
 
 @Component({
     selector: 'app-home',
@@ -9,14 +10,26 @@ import {Lista, NotasService} from '../../services/notas.service';
 })
 export class HomePage {
     private notas: Lista[];
+    private loading: any;
 
-    constructor(public navCtrl: NavController, private notasService: NotasService) {
+    constructor(public navCtrl: NavController, private db: DbService, public loadCtrl: LoadingController) {
+    }
+
+    ionViewWillEnter() {
+        this.notas = [];
     }
 
     ionViewDidEnter() {
-        this.notasService.getAll()
-            .then((result) => {
-                this.notas = result;
+        this.presentLoading()
+            .then(() => {
+                this.db.getAll()
+                    .then((result) => {
+                        this.notas = result;
+                        this.loadCtrl.dismiss()
+                            .catch((error) => {
+                                console.log(error);
+                            });
+                    });
             });
     }
 
@@ -26,10 +39,18 @@ export class HomePage {
     }
 
     excluirNota(item: Lista) {
-        this.notasService.remove(item.key)
+        this.db.remove(item.key)
             .then(() => {
                 const index = this.notas.indexOf(item);
                 this.notas.splice(index, 1);
             });
+    }
+
+    private async presentLoading() {
+        this.loading = await this.loadCtrl.create({
+            message: 'Carregando',
+            duration: 2000
+        });
+        return this.loading.present();
     }
 }

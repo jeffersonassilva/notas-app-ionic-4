@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 import {NavController} from '@ionic/angular';
-import {NotasService, Nota} from '../../services/notas.service';
+import {DbService, Nota} from '../../services/db.service';
 
 @Component({
     selector: 'app-cadastro',
@@ -11,7 +11,7 @@ export class CadastroPage {
 
     model = new Nota();
 
-    constructor(public navCtrl: NavController, private notasService: NotasService) {
+    constructor(public navCtrl: NavController, private db: DbService) {
     }
 
     goBack() {
@@ -19,8 +19,10 @@ export class CadastroPage {
     }
 
     save() {
-        this.notasService.insert(this.model);
-        this.navCtrl.pop();
+        this.db.insert(this.model)
+            .then(() => {
+                this.navCtrl.pop();
+            });
     }
 
 }
