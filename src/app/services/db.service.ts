@@ -5,7 +5,7 @@ import {DatePipe} from '@angular/common';
 @Injectable({
     providedIn: 'root'
 })
-export class NotasService {
+export class DbService {
 
     constructor(public storage: Storage, public datepipe: DatePipe) {
     }
@@ -16,7 +16,13 @@ export class NotasService {
     }
 
     public save(key: string, nota: Nota) {
-        this.storage.set(key, nota);
+        return this.storage.set(key, nota)
+            .then(() => {
+                return Promise.resolve();
+            })
+            .catch((error) => {
+                return Promise.reject(error);
+            });
     }
 
     public remove(key: string) {
