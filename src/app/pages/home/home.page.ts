@@ -36,11 +36,12 @@ export class HomePage {
     }
 
     adicionarNota() {
-        this.navCtrl.navigateForward('/cadastro')
-            .then(() => {})
-            .catch((error) => {
-                console.log(error);
-            });
+        this.navCtrl.navigateForward('/cadastro').finally();
+    }
+
+    editarNota(item: Lista) {
+        this.navCtrl.params = item;
+        this.navCtrl.navigateForward('/cadastro').finally();
     }
 
     excluirNota(item: Lista) {

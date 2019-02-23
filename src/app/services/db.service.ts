@@ -15,6 +15,10 @@ export class DbService {
         return this.save(key, nota);
     }
 
+    public update(key: string, nota: Nota) {
+        return this.save(key, nota);
+    }
+
     public save(key: string, nota: Nota) {
         return this.storage.set(key, nota)
             .then(() => {
