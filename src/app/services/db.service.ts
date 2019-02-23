@@ -10,6 +10,16 @@ export class DbService {
     constructor(public storage: Storage, public datepipe: DatePipe) {
     }
 
+    public get(key: string) {
+        return this.storage.get(key)
+            .then((value) => {
+                return Promise.resolve(value);
+            })
+            .catch((error) => {
+                return Promise.reject(error);
+            });
+    }
+
     public insert(nota: Nota) {
         const key = this.datepipe.transform(new Date(), 'ddMMyyyyHHmmss');
         return this.save(key, nota);

@@ -40,8 +40,7 @@ export class HomePage {
     }
 
     editarNota(item: Lista) {
-        this.navCtrl.params = item;
-        this.navCtrl.navigateForward('/cadastro').finally();
+        this.navCtrl.navigateForward('/cadastro/' + item.key);
     }
 
     excluirNota(item: Lista) {
