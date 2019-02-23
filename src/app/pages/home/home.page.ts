@@ -12,7 +12,7 @@ export class HomePage {
     private notas: Lista[];
     private loading: any;
 
-    constructor(public navCtrl: NavController, private db: DbService, public loadCtrl: LoadingController) {
+    constructor(public navCtrl: NavController, private db: DbService, private loadCtrl: LoadingController) {
     }
 
     ionViewWillEnter() {
@@ -25,6 +25,8 @@ export class HomePage {
                 this.db.getAll()
                     .then((result) => {
                         this.notas = result;
+                    })
+                    .finally(() => {
                         this.loadCtrl.dismiss()
                             .catch((error) => {
                                 console.log(error);
@@ -35,7 +37,10 @@ export class HomePage {
 
     adicionarNota() {
         this.navCtrl.navigateForward('/cadastro')
-            .then(() => {});
+            .then(() => {})
+            .catch((error) => {
+                console.log(error);
+            });
     }
 
     excluirNota(item: Lista) {
