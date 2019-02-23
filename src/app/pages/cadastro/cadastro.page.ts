@@ -21,7 +21,10 @@ export class CadastroPage {
     save() {
         this.db.insert(this.model)
             .then(() => {
-                this.navCtrl.pop();
+                this.navCtrl.pop()
+                    .catch((error) => {
+                        console.log(error);
+                    });
             });
     }
 
