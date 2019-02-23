@@ -9,9 +9,16 @@ import {DbService, Nota} from '../../services/db.service';
 })
 export class CadastroPage {
 
-    model = new Nota();
+    private key;
+    private model = new Nota();
 
     constructor(public navCtrl: NavController, private db: DbService) {
+        if (this.navCtrl.params && this.navCtrl.params.key) {
+            this.key = this.navCtrl.params.key;
+            this.model = this.navCtrl.params.nota;
+        } else {
+            this.model = new Nota();
+        }
     }
 
     goBack() {
@@ -19,13 +26,22 @@ export class CadastroPage {
     }
 
     save() {
-        this.db.insert(this.model)
-            .then(() => {
-                this.navCtrl.pop()
-                    .catch((error) => {
-                        console.log(error);
-                    });
+        this.saveNota()
+            .finally(() => {
+                this.navCtrl.pop().finally();
             });
+    }
+
+    private saveNota() {
+        if (this.key) {
+            return this.db.update(this.key, this.model);
+        } else {
+            return this.db.insert(this.model);
+        }
+    }
+
+    ionViewDidLeave() {
+        this.navCtrl.params = null;
     }
 
 }
