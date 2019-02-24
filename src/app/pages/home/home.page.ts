@@ -2,6 +2,7 @@ import {Component} from '@angular/core';
 import {NavController} from '@ionic/angular';
 import {DbService, Lista} from '../../services/db.service';
 import {LoadingController} from '@ionic/angular';
+import {ToastComponent} from '../../components/toast/toast.component';
 
 @Component({
     selector: 'app-home',
@@ -12,7 +13,12 @@ export class HomePage {
     private notas: Lista[];
     private loading: any;
 
-    constructor(public navCtrl: NavController, private db: DbService, private loadCtrl: LoadingController) {
+    constructor(
+        public navCtrl: NavController,
+        private db: DbService,
+        private loadCtrl: LoadingController,
+        private toastComponent: ToastComponent
+    ) {
     }
 
     ionViewWillEnter() {
@@ -49,6 +55,7 @@ export class HomePage {
             .then(() => {
                 const index = this.notas.indexOf(item);
                 this.notas.splice(index, 1);
+                this.toastComponent.alert('Nota excluída com sucesso!').finally();
             });
     }
 
