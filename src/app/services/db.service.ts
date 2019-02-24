@@ -20,6 +20,9 @@ export class DbService {
     }
 
     public save(key: string, nota: Nota) {
+        if (nota.title === undefined || nota.description === undefined) {
+            return Promise.reject('Favor preencher os campos!');
+        }
         return this.storage.set(key, nota)
             .then(() => {
                 return Promise.resolve();
