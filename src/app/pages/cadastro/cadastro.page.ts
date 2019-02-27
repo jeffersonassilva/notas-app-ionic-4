@@ -1,49 +1,69 @@
-import {Component} from '@angular/core';
-import {NavController} from '@ionic/angular';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {DbService, Nota} from '../../services/db.service';
 import {ToastComponent} from '../../components/toast/toast.component';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
+import {filter, map} from 'rxjs/operators';
+import {Subscription} from 'rxjs';
 
 @Component({
     selector: 'app-cadastro',
     templateUrl: './cadastro.page.html',
     styleUrls: ['./cadastro.page.scss'],
 })
-export class CadastroPage {
+export class CadastroPage implements OnInit, OnDestroy {
 
     private key;
     private model = new Nota();
+    private sub: Subscription;
 
     constructor(
-        public navCtrl: NavController,
         private db: DbService,
-        private toastComponent: ToastComponent,
-        private router: ActivatedRoute
+        private toast: ToastComponent,
+        private route: ActivatedRoute,
+        private router: Router
     ) {
-        this.key = this.router.snapshot.paramMap.get('key');
-        if (this.key) {
-            this.db.get(this.key)
-                .then((value) => {
-                    this.model = value;
-                });
-        } else {
-            this.model = new Nota();
+        this.model = new Nota();
+    }
+
+    ngOnInit() {
+        this.sub = this.route.params
+            .pipe(
+                filter(item => item.key),
+                map(item => item.key)
+            )
+            .subscribe(key => {
+                this.key = key;
+                this.updateItem();
+            });
+    }
+
+    ngOnDestroy() {
+        if (this.sub) {
+            this.sub.unsubscribe();
         }
     }
 
+    updateItem() {
+        this.db.get(this.key)
+            .then((value) => {
+                this.model = value;
+            });
+    }
+
     goBack() {
-        this.navCtrl.back();
+        this.router.navigate(['/home']);
     }
 
     save() {
         this.saveNota()
             .then(() => {
-                this.navCtrl.pop().finally(() => {
-                    this.toastComponent.alert('Nota salva com sucesso!').finally();
-                });
+                this.router.navigate(['/home'])
+                    .finally(() => {
+                        this.toast.alert('Nota salva com sucesso!').finally();
+                    });
             })
             .catch((error) => {
-                this.toastComponent.alert(error, 'danger', 3000).finally();
+                this.toast.alert(error, 'danger', 3000).finally();
             });
     }
 

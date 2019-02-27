@@ -1,8 +1,8 @@
-import {Component} from '@angular/core';
-import {NavController} from '@ionic/angular';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {DbService, Lista} from '../../services/db.service';
 import {LoadingController} from '@ionic/angular';
 import {ToastComponent} from '../../components/toast/toast.component';
+import {Router} from '@angular/router';
 
 @Component({
     selector: 'app-home',
@@ -14,14 +14,11 @@ export class HomePage {
     private loading: any;
 
     constructor(
-        public navCtrl: NavController,
         private db: DbService,
         private loadCtrl: LoadingController,
-        private toastComponent: ToastComponent
+        private toast: ToastComponent,
+        private router: Router,
     ) {
-    }
-
-    ionViewWillEnter() {
         this.notas = [];
     }
 
@@ -42,11 +39,11 @@ export class HomePage {
     }
 
     adicionarNota() {
-        this.navCtrl.navigateForward('/cadastro').finally();
+        this.router.navigate(['/cadastro']);
     }
 
     editarNota(item: Lista) {
-        this.navCtrl.navigateForward('/cadastro/' + item.key);
+        this.router.navigate(['/cadastro', item.key]);
     }
 
     excluirNota(item: Lista) {
@@ -54,7 +51,7 @@ export class HomePage {
             .then(() => {
                 const index = this.notas.indexOf(item);
                 this.notas.splice(index, 1);
-                this.toastComponent.alert('Nota excluída com sucesso!').finally();
+                this.toast.alert('Nota excluída com sucesso!').finally();
             });
     }
 
