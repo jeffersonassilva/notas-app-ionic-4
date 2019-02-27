@@ -2,6 +2,7 @@ import {Component} from '@angular/core';
 import {NavController} from '@ionic/angular';
 import {DbService, Nota} from '../../services/db.service';
 import {ToastComponent} from '../../components/toast/toast.component';
+import {ActivatedRoute} from '@angular/router';
 
 @Component({
     selector: 'app-cadastro',
@@ -16,11 +17,15 @@ export class CadastroPage {
     constructor(
         public navCtrl: NavController,
         private db: DbService,
-        private toastComponent: ToastComponent
+        private toastComponent: ToastComponent,
+        private router: ActivatedRoute
     ) {
-        if (this.navCtrl.params && this.navCtrl.params.key) {
-            this.key = this.navCtrl.params.key;
-            this.model = this.navCtrl.params.nota;
+        this.key = this.router.snapshot.paramMap.get('key');
+        if (this.key) {
+            this.db.get(this.key)
+                .then((value) => {
+                    this.model = value;
+                });
         } else {
             this.model = new Nota();
         }
@@ -49,9 +54,4 @@ export class CadastroPage {
             return this.db.insert(this.model);
         }
     }
-
-    ionViewDidLeave() {
-        this.navCtrl.params = null;
-    }
-
 }
