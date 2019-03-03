@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnChanges, OnDestroy, OnInit} from '@angular/core';
 import {DbService, Lista} from '../../services/db.service';
 import {LoadingController} from '@ionic/angular';
 import {ToastComponent} from '../../components/toast/toast.component';
@@ -9,7 +9,7 @@ import {Router} from '@angular/router';
     templateUrl: './home.page.html',
     styleUrls: ['./home.page.scss'],
 })
-export class HomePage {
+export class HomePage implements OnInit, OnChanges, OnDestroy {
     private notas: Lista[];
     private loading: any;
 
@@ -22,7 +22,18 @@ export class HomePage {
         this.notas = [];
     }
 
-    ionViewDidEnter() {
+    ngOnInit() {
+        this.carregarLista();
+        this.db.emissorService.subscribe(() => {
+            this.carregarLista();
+        });
+    }
+
+    ngOnDestroy() {
+        this.db.emissorService.unsubscribe();
+    }
+
+    carregarLista() {
         this.presentLoading()
             .then(() => {
                 this.db.getAll()
@@ -49,8 +60,6 @@ export class HomePage {
     excluirNota(item: Lista) {
         this.db.remove(item.key)
             .then(() => {
-                const index = this.notas.indexOf(item);
-                this.notas.splice(index, 1);
                 this.toast.alert('Nota excluída com sucesso!').finally();
             });
     }
@@ -58,7 +67,7 @@ export class HomePage {
     private async presentLoading() {
         this.loading = await this.loadCtrl.create({
             message: 'Carregando',
-            duration: 2000
+            duration: 1000
         });
         return this.loading.present();
     }

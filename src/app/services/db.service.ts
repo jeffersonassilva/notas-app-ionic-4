@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {EventEmitter, Injectable} from '@angular/core';
 import {Storage} from '@ionic/storage';
 import {DatePipe} from '@angular/common';
 
@@ -6,6 +6,8 @@ import {DatePipe} from '@angular/common';
     providedIn: 'root'
 })
 export class DbService {
+
+    emissorService = new EventEmitter();
 
     constructor(public storage: Storage, public datepipe: DatePipe) {
     }
@@ -30,6 +32,7 @@ export class DbService {
     }
 
     public save(key: string, nota: Nota) {
+        this.emissorService.emit();
         if (nota.title === undefined || nota.description === undefined) {
             return Promise.reject('Favor preencher os campos!');
         }
@@ -43,6 +46,7 @@ export class DbService {
     }
 
     public remove(key: string) {
+        this.emissorService.emit();
         return this.storage.remove(key);
     }
 
