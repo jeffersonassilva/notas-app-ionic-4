@@ -1,4 +1,4 @@
-import {Component, OnChanges, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {DbService, Lista} from '../../services/db.service';
 import {LoadingController} from '@ionic/angular';
 import {ToastComponent} from '../../components/toast/toast.component';
@@ -9,7 +9,7 @@ import {Router} from '@angular/router';
     templateUrl: './home.page.html',
     styleUrls: ['./home.page.scss'],
 })
-export class HomePage implements OnInit, OnChanges, OnDestroy {
+export class HomePage implements OnInit, OnDestroy {
     private notas: Lista[];
     private loading: any;
 
