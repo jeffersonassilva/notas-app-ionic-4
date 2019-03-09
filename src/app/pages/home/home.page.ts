@@ -1,8 +1,9 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {DbService, Lista} from '../../services/db.service';
+import {DbService} from '../../services/db.service';
 import {LoadingController} from '@ionic/angular';
 import {ToastComponent} from '../../components/toast/toast.component';
 import {Router} from '@angular/router';
+import {Lista} from '../../interfaces/lista';
 
 @Component({
     selector: 'app-home',

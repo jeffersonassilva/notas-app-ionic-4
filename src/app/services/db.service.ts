@@ -1,6 +1,8 @@
 import {EventEmitter, Injectable} from '@angular/core';
 import {Storage} from '@ionic/storage';
 import {DatePipe} from '@angular/common';
+import {Nota} from '../interfaces/nota';
+import {Lista} from '../interfaces/lista';
 
 @Injectable({
     providedIn: 'root'
@@ -23,7 +25,7 @@ export class DbService {
     }
 
     public insert(nota: Nota) {
-        const key = this.datepipe.transform(new Date(), 'ddMMyyyyHHmmss');
+        const key = this.datepipe.transform(new Date(), 'yyyyMMddHHmmss');
         return this.save(key, nota);
     }
 
@@ -53,24 +55,15 @@ export class DbService {
     public getAll() {
         const notas: Lista[] = [];
         return this.storage.forEach((value: Nota, key: string, iterationNumber: Number) => {
-            const nota = new Lista();
-            nota.key = key;
-            nota.nota = value;
-            notas.push(nota);
+            const item = <Lista>{};
+            item.key = key;
+            item.nota = value;
+            notas.push(item);
         }).then(() => {
+            notas.reverse();
             return Promise.resolve(notas);
         }).catch((error) => {
             return Promise.reject(error);
         });
     }
-}
-
-export class Nota {
-    title: string;
-    description: string;
-}
-
-export class Lista {
-    key: string;
-    nota: Nota;
 }
