@@ -1,9 +1,10 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {DbService, Nota} from '../../services/db.service';
+import {DbService} from '../../services/db.service';
 import {ToastComponent} from '../../components/toast/toast.component';
 import {ActivatedRoute, Router} from '@angular/router';
 import {filter, map} from 'rxjs/operators';
 import {Subscription} from 'rxjs';
+import {Nota} from '../../interfaces/nota';
 
 @Component({
     selector: 'app-cadastro',
@@ -13,7 +14,7 @@ import {Subscription} from 'rxjs';
 export class CadastroPage implements OnInit, OnDestroy {
 
     private key;
-    private model = new Nota();
+    private model: Nota;
     private sub: Subscription;
 
     constructor(
@@ -22,7 +23,7 @@ export class CadastroPage implements OnInit, OnDestroy {
         private route: ActivatedRoute,
         private router: Router
     ) {
-        this.model = new Nota();
+        this.model = <Nota>{};
     }
 
     ngOnInit() {
