@@ -12,7 +12,6 @@ import {Lista} from '../../interfaces/lista';
 })
 export class HomePage implements OnInit, OnDestroy {
     private notas: Lista[];
-    private loading: any;
 
     constructor(
         private db: DbService,
@@ -67,22 +66,11 @@ export class HomePage implements OnInit, OnDestroy {
         }, 1000);
     }
 
-    pullDown() {
-        this.presentLoading()
-            .then(() => {
-                this.carregarLista();
-            })
-            .finally(() => {
-                this.loadCtrl.dismiss();
-            });
-    }
-
-    private async presentLoading() {
-        this.loading = await this.loadCtrl.create({
-            message: 'Carregando',
-            duration: 1000
-        });
-        return this.loading.present();
+    doRefresh(event) {
+        this.carregarLista();
+        setTimeout(() => {
+            event.target.complete();
+        }, 1000);
     }
 
     animateCSS(element, animationName, callback) {
