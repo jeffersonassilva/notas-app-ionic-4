@@ -4,6 +4,7 @@ import {LoadingController} from '@ionic/angular';
 import {ToastComponent} from '../../components/toast/toast.component';
 import {Router} from '@angular/router';
 import {Lista} from '../../interfaces/lista';
+import {AnimateService} from '../../services/animate.service';
 
 @Component({
     selector: 'app-home',
@@ -15,6 +16,7 @@ export class HomePage implements OnInit, OnDestroy {
 
     constructor(
         private db: DbService,
+        private animateCss: AnimateService,
         private loadCtrl: LoadingController,
         private toast: ToastComponent,
         private router: Router,
@@ -28,8 +30,8 @@ export class HomePage implements OnInit, OnDestroy {
             if (item.type === 'insert') {
                 this.notas.unshift(item);
                 setTimeout(() => {
-                    this.animateCSS('.item', 'pulse', '');
-                }, 200);
+                    this.animateCss.execute('.item', 'pulse');
+                }, 500);
             } else if (item.type === 'update') {
                 this.carregarLista();
             }
@@ -73,20 +75,20 @@ export class HomePage implements OnInit, OnDestroy {
         }, 1000);
     }
 
-    animateCSS(element, animationName, callback) {
-        const node = document.querySelector(element);
-        node.classList.remove('fadeIn');
-        node.classList.add(animationName);
-
-        function handleAnimationEnd() {
-            node.classList.remove(animationName);
-            node.removeEventListener('animationend', handleAnimationEnd);
-
-            if (typeof callback === 'function') {
-                callback();
-            }
-        }
-
-        node.addEventListener('animationend', handleAnimationEnd);
-    }
+    // animateCSS(element, animationName, callback) {
+    //     const node = document.querySelector(element);
+    //     node.classList.remove('fadeIn');
+    //     node.classList.add(animationName);
+    //
+    //     function handleAnimationEnd() {
+    //         node.classList.remove(animationName);
+    //         node.removeEventListener('animationend', handleAnimationEnd);
+    //
+    //         if (typeof callback === 'function') {
+    //             callback();
+    //         }
+    //     }
+    //
+    //     node.addEventListener('animationend', handleAnimationEnd);
+    // }
 }
