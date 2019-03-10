@@ -28,6 +28,9 @@ export class HomePage implements OnInit, OnDestroy {
         this.db.emissorService.subscribe((item) => {
             if (item.type === 'insert') {
                 this.notas.unshift(item);
+                setTimeout(() => {
+                    this.animateCSS('.item', 'pulse', '');
+                }, 200);
             } else if (item.type === 'update') {
                 this.carregarLista();
             }
@@ -53,13 +56,15 @@ export class HomePage implements OnInit, OnDestroy {
         this.router.navigate(['/cadastro', item.key]);
     }
 
-    excluirNota(item: Lista) {
-        this.db.remove(item.key)
-            .then(() => {
-                const index = this.notas.indexOf(item);
-                this.notas.splice(index, 1);
-                this.toast.alert('Nota excluída com sucesso!').finally();
-            });
+    excluirNota(item: Lista, event: any) {
+        event.target.parentElement.classList.add('fadeOut');
+        setTimeout(() => {
+            this.db.remove(item.key)
+                .then(() => {
+                    const index = this.notas.indexOf(item);
+                    this.notas.splice(index, 1);
+                });
+        }, 1000);
     }
 
     pullDown() {
@@ -78,5 +83,22 @@ export class HomePage implements OnInit, OnDestroy {
             duration: 1000
         });
         return this.loading.present();
+    }
+
+    animateCSS(element, animationName, callback) {
+        const node = document.querySelector(element);
+        node.classList.remove('fadeIn');
+        node.classList.add(animationName);
+
+        function handleAnimationEnd() {
+            node.classList.remove(animationName);
+            node.removeEventListener('animationend', handleAnimationEnd);
+
+            if (typeof callback === 'function') {
+                callback();
+            }
+        }
+
+        node.addEventListener('animationend', handleAnimationEnd);
     }
 }
