@@ -26,15 +26,20 @@ export class DbService {
 
     public insert(nota: Nota) {
         const key = this.datepipe.transform(new Date(), 'yyyyMMddHHmmss');
-        return this.save(key, nota);
+        return this.save(key, nota).finally(() => {
+            const item = {key, nota, 'type': 'insert'};
+            this.emissorService.emit(item);
+        });
     }
 
     public update(key: string, nota: Nota) {
-        return this.save(key, nota);
+        return this.save(key, nota).finally(() => {
+            const item = {key, nota, 'type': 'update'};
+            this.emissorService.emit(item);
+        });
     }
 
     public save(key: string, nota: Nota) {
-        this.emissorService.emit();
         if (nota.title === undefined || nota.description === undefined) {
             return Promise.reject('Favor preencher os campos!');
         }
@@ -48,7 +53,6 @@ export class DbService {
     }
 
     public remove(key: string) {
-        this.emissorService.emit();
         return this.storage.remove(key);
     }
 
