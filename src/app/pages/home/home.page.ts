@@ -25,8 +25,12 @@ export class HomePage implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.carregarLista();
-        this.db.emissorService.subscribe(() => {
-            this.carregarLista();
+        this.db.emissorService.subscribe((item) => {
+            if (item.type === 'insert') {
+                this.notas.unshift(item);
+            } else if (item.type === 'update') {
+                this.carregarLista();
+            }
         });
     }
 
@@ -35,18 +39,9 @@ export class HomePage implements OnInit, OnDestroy {
     }
 
     carregarLista() {
-        this.presentLoading()
-            .then(() => {
-                this.db.getAll()
-                    .then((result) => {
-                        this.notas = result;
-                    })
-                    .finally(() => {
-                        this.loadCtrl.dismiss()
-                            .catch((error) => {
-                                console.log(error);
-                            });
-                    });
+        this.db.getAll()
+            .then((result) => {
+                this.notas = result;
             });
     }
 
@@ -61,7 +56,19 @@ export class HomePage implements OnInit, OnDestroy {
     excluirNota(item: Lista) {
         this.db.remove(item.key)
             .then(() => {
+                const index = this.notas.indexOf(item);
+                this.notas.splice(index, 1);
                 this.toast.alert('Nota excluída com sucesso!').finally();
+            });
+    }
+
+    pullDown() {
+        this.presentLoading()
+            .then(() => {
+                this.carregarLista();
+            })
+            .finally(() => {
+                this.loadCtrl.dismiss();
             });
     }
 
