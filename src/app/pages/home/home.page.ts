@@ -12,7 +12,6 @@ import {Lista} from '../../interfaces/lista';
 })
 export class HomePage implements OnInit, OnDestroy {
     private notas: Lista[];
-    private loading: any;
 
     constructor(
         private db: DbService,
@@ -28,6 +27,9 @@ export class HomePage implements OnInit, OnDestroy {
         this.db.emissorService.subscribe((item) => {
             if (item.type === 'insert') {
                 this.notas.unshift(item);
+                setTimeout(() => {
+                    this.animateCSS('.item', 'pulse', '');
+                }, 200);
             } else if (item.type === 'update') {
                 this.carregarLista();
             }
@@ -53,30 +55,38 @@ export class HomePage implements OnInit, OnDestroy {
         this.router.navigate(['/cadastro', item.key]);
     }
 
-    excluirNota(item: Lista) {
-        this.db.remove(item.key)
-            .then(() => {
-                const index = this.notas.indexOf(item);
-                this.notas.splice(index, 1);
-                this.toast.alert('Nota excluída com sucesso!').finally();
-            });
+    excluirNota(item: Lista, event: any) {
+        event.target.parentElement.classList.add('fadeOut');
+        setTimeout(() => {
+            this.db.remove(item.key)
+                .then(() => {
+                    const index = this.notas.indexOf(item);
+                    this.notas.splice(index, 1);
+                });
+        }, 1000);
     }
 
-    pullDown() {
-        this.presentLoading()
-            .then(() => {
-                this.carregarLista();
-            })
-            .finally(() => {
-                this.loadCtrl.dismiss();
-            });
+    doRefresh(event) {
+        this.carregarLista();
+        setTimeout(() => {
+            event.target.complete();
+        }, 1000);
     }
 
-    private async presentLoading() {
-        this.loading = await this.loadCtrl.create({
-            message: 'Carregando',
-            duration: 1000
-        });
-        return this.loading.present();
+    animateCSS(element, animationName, callback) {
+        const node = document.querySelector(element);
+        node.classList.remove('fadeIn');
+        node.classList.add(animationName);
+
+        function handleAnimationEnd() {
+            node.classList.remove(animationName);
+            node.removeEventListener('animationend', handleAnimationEnd);
+
+            if (typeof callback === 'function') {
+                callback();
+            }
+        }
+
+        node.addEventListener('animationend', handleAnimationEnd);
     }
 }

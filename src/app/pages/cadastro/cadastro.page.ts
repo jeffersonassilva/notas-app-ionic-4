@@ -58,10 +58,7 @@ export class CadastroPage implements OnInit, OnDestroy {
     save() {
         this.saveNota()
             .then(() => {
-                this.router.navigate(['/home'])
-                    .finally(() => {
-                        this.toast.alert('Nota salva com sucesso!').finally();
-                    });
+                this.router.navigate(['/home']).finally();
             })
             .catch((error) => {
                 this.toast.alert(error, 'danger', 3000).finally();
